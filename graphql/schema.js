@@ -26,7 +26,7 @@ module.exports = buildSchema(`
 
     type AuthData {
         token: String!
-        userId: String!
+        user: User!
     }
 
     type RecipeData {

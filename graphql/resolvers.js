@@ -87,7 +87,7 @@ module.exports = {
             'adojuteleganbabafemisecretkey',
             { expiresIn: '1h' }
         );
-        return { token: token, userId: user._id.toString() };
+        return { token: token, user: user };
     },
     createRecipe: async function ({ recipeInput }, req) {
         await isAuth(req);
