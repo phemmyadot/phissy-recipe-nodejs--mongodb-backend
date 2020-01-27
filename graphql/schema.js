@@ -6,7 +6,6 @@ module.exports = buildSchema(`
         title: String!
         description: String!
         imageUrl: String!
-        category: String!
         creator: User!
         likes: [String]
         comments: [String]
@@ -18,10 +17,9 @@ module.exports = buildSchema(`
         _id: ID!
         firstName: String!
         lastName: String!
-        userName: String!
+        displayName: String!
         email: String!
         password: String!
-        role: String!
         imageUrl: String!
         recipes: [Recipe!]!
     }
@@ -41,15 +39,14 @@ module.exports = buildSchema(`
         firstName: String!
         lastName: String!
         password: String!
-        userName: String!
+        confirmPassword: String!
+        displayName: String!
         imageUrl: String!
-        role: String!
     }
 
     input RecipeInputData {
         title: String!
         description: String!
-        category: String!
         imageUrl: String!
     }
 

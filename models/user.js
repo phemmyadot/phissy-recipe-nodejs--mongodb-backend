@@ -10,7 +10,7 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    userName: {
+    displayName: {
         type: String,
         required: true
     },
@@ -19,10 +19,6 @@ const userSchema = new Schema({
         required: true
     },
     lastName: {
-        type: String,
-        required: true
-    },
-    role: {
         type: String,
         required: true
     },

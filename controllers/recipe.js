@@ -68,15 +68,13 @@ exports.createRecipe = (req, res, next) => {
   const title = req.body.title;
   const description = req.body.description;
   // const imageUrl = req.file.path;
-  const imageUrl = '/images/test.jpg';
-  const category = req.body.category;
+  const imageUrl = req.body.imageUrl;
   let creator;
   const recipe = new Recipe({
     title: title,
     description: description,
     imageUrl: imageUrl,
-    creator: req.userId,
-    category: category
+    creator: req.userId
   });
   recipe
     .save()
@@ -113,7 +111,7 @@ exports.updateRecipe = (req, res, next) => {
   }
   const title = req.body.title;
   const description = req.body.description;
-  let imageUrl = req.body.image;
+  let imageUrl = req.body.imageUrl;
   // if (req.file) {
   // const imageUrl = req.file.path;
   // }
@@ -123,7 +121,6 @@ exports.updateRecipe = (req, res, next) => {
   //   throw error;
   // }
   const creator = req.body.creator;
-  const category = req.body.category;
 
   Recipe.findById(recipeId)
     .then(recipe => {
@@ -144,7 +141,6 @@ exports.updateRecipe = (req, res, next) => {
       recipe.description = description;
       recipe.imageUrl = imageUrl;
       recipe.creator = creator;
-      recipe.category = category;
       return recipe.save();
     })
     .then(result => {

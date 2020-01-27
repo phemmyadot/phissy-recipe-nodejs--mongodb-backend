@@ -20,13 +20,17 @@ module.exports = {
         ) {
             errors.push({ message: 'Password too short!' });
         }
+
+        if (userInput.confirmPassword !== userInput.password) {
+            errors.push.apply({ message: "Confirm password does not match!" })
+        }
         if (validator.isEmpty(userInput.firstName)) {
             errors.push.apply({ message: "First name cannot be empty!" })
         }
         if (validator.isEmpty(userInput.lastName)) {
             errors.push.apply({ message: "Last name cannot be empty!" })
         }
-        if (validator.isEmpty(userInput.userName)) {
+        if (validator.isEmpty(userInput.displayName)) {
             errors.push.apply({ message: "User name cannot be empty!" })
         }
         if (errors.length > 0) {
@@ -35,7 +39,7 @@ module.exports = {
             error.code = 422;
             throw error;
         }
-        const existingUser = await User.findOne({ email: userInput.email } || { userName: userInput.userName });
+        const existingUser = await User.findOne({ email: userInput.email } || { displayName: userInput.displayName });
         if (existingUser) {
             const error = new Error('User already exists!');
             throw error;
@@ -43,7 +47,7 @@ module.exports = {
         const hashedPw = await bcrypt.hash(userInput.password, 12);
         const user = new User({
             email: userInput.email,
-            userName: userInput.userName,
+            displayName: userInput.displayName,
             firstName: userInput.firstName,
             lastName: userInput.lastName,
             password: hashedPw,
@@ -54,7 +58,17 @@ module.exports = {
         return { ...createdUser._doc, _id: createdUser._id.toString() };
     },
     login: async function ({ email, password }) {
-        const user = await User.findOne({ email: email } || { userName: email });
+        const errors = [];
+        if (!validator.isEmail(email)) {
+            errors.push({ message: 'E-mail is invalid!' });
+        }
+        if (
+            validator.isEmpty(password) ||
+            !validator.isLength(password, { min: 6 })
+        ) {
+            errors.push({ message: 'Password too short!' });
+        }
+        const user = await User.findOne({ email: email } || { displayName: email });
         await isValidUser(user);
         let isEqual;
         await bcrypt.compare(password, user.password).then(valid => {

@@ -20,10 +20,6 @@ const recipeSchema = new Schema(
       ref: 'User',
       required: true
     },
-    category: {
-      type: String,
-      required: true
-    },
     likes: {
       type: Array,
       required: true

@@ -5,14 +5,47 @@ const graphqlHTTP = require('express-graphql');
 const graphqlSchema = require('./graphql/schema');
 const graphqlResolver = require('./graphql/resolvers');
 const auth = require('./middleware/auth');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const User = require('./models/user');
 
 // const cors = require("cors");
 
 
 const app = express();
 
-app.use(bodyParser.json());
+const fileStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'images')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '_' + file.originalname)
+  }
+});
 
+cloudinary.config({
+  cloud_name: 'codevillian',
+  api_key: '478726612647927',
+  api_secret: 'kEwzjOuPLWl1BEnHQa3Ew8LG4I4'
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+app.use(bodyParser.json());
+app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
@@ -30,8 +63,28 @@ var corsOptions = {
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
-app.use(auth);
 
+app.post('/post-image', (req, res, next) => {
+  User.findOne({ email: req.body.email } || { displayName: req.body.displayName }).then(user => {
+    if (user) {
+      clearImage(req.file.path);
+      return;
+    }
+    if (!req.file) {
+      return res.status(401).json({ message: 'No file provided!' });
+    }
+    cloudinary.uploader.upload(req.file.path, function (error, result) {
+      clearImage(req.file.path);
+      if (error) {
+        return res.status(501).json({ message: 'Upload to Cloudinary failed!' });
+      }
+      return res.status(201).json({ message: 'File Uploaded to Cloudinary!', filePath: result.url });
+    });
+  })
+});
+
+
+app.use(auth);
 // app.use(cors());
 
 app.use(
@@ -83,3 +136,10 @@ mongoose
   })
   .catch(err => console.log(err, 'error'));
 
+
+const clearImage = filePath => {
+  filePath = path.join(__dirname, '', filePath);
+  fs.unlink(filePath, err => {
+    if (err) console.log(err)
+  });
+}
