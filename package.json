@@ -7,17 +7,18 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js"
   },
-
  "keywords": [
     "heroku"
   ],
-
   "repository": {
     "type": "git",
     "url": "https://github.com/phemmyadot/phissy-recipe-nodejs--mongodb-backend/edit/master/package.json"
   },
   "author": "CodeVillian",
   "license": "ISC",
+  "engines": {
+    "node": "10.x"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
