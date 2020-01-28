@@ -9,9 +9,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/udemy-course-nodejs-complete"
+    "url": "https://github.com/phemmyadot/phissy-recipe-nodejs--mongodb-backend/edit/master/package.json"
   },
-  "author": "",
+  "author": "CodeVillian",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
