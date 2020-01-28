@@ -44,6 +44,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use((req, res, next) => {
@@ -53,6 +54,7 @@ app.use((req, res, next) => {
     'OPTIONS, GET, POST, PUT, PATCH, DELETE'
   );
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
@@ -98,6 +100,7 @@ app.use(
       if (!err.originalError) {
         return err;
       }
+      console.log('error');
       const data = err.originalError.data;
       const message = err.message || 'An error occurred!';
       const code = err.originalError.code || 500;

@@ -90,6 +90,7 @@ module.exports = {
         return { token: token, user: user };
     },
     createRecipe: async function ({ recipeInput }, req) {
+        console.log(recipeInput);
         await isAuth(req);
         await validateRecipeInput(recipeInput);
         const user = await User.findById(req.userId);
@@ -97,7 +98,6 @@ module.exports = {
         const recipe = new Recipe({
             title: recipeInput.title,
             description: recipeInput.description,
-            category: recipeInput.category,
             imageUrl: recipeInput.imageUrl,
             creator: user
         });
@@ -158,7 +158,6 @@ module.exports = {
         await isCreator(req, recipe);
         recipe.title = recipeInput.title;
         recipe.description = recipeInput.description;
-        recipe.category = recipeInput.category;
         if (recipe.imageUrl !== 'undefined') {
             recipe.imageUrl = recipeInput.imageUrl;
         }
@@ -216,9 +215,6 @@ function validateRecipeInput(recipeInput) {
     }
     if (validator.isEmpty(recipeInput.description)) {
         errors.push({ message: 'Description is not entered!' });
-    }
-    if (validator.isEmpty(recipeInput.category)) {
-        errors.push({ message: 'Category is not entered!' });
     }
     if (validator.isEmpty(recipeInput.imageUrl)) {
         errors.push({ message: 'ImageUrl is not entered!' });

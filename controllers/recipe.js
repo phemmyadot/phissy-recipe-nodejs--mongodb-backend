@@ -11,7 +11,6 @@ const Recipe = require('../models/recipe');
 exports.fetchAllRecipes = (req, res, next) => {
   const currentPage = +req.query.currentPage || 1;
   const pageSize = +req.query.pageSize || 5;
-  console.log(currentPage, pageSize);
   let totalRecipes;
   Recipe.find().countDocuments()
     .then(count => {
@@ -189,10 +188,3 @@ exports.removeRecipe = (req, res, next) => {
       next(err);
     });
 }
-
-
-
-// const clearImage = filePath => {
-//   filePath = path.join(__dirname, '..', filePath);
-//   fs.unlink(filePath, err => console.log(err));
-// }
