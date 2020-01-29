@@ -105,7 +105,12 @@ module.exports = {
         const createdRecipe = await recipe.save();
         user.recipes.push(createdRecipe);
         await user.save();
-        return true;
+        return {
+            ...createdRecipe._doc,
+            _id: createdRecipe._id.toString(),
+            createdAt: createdRecipe.createdAt.toString(),
+            updatedAt: createdRecipe.updatedAt.toString()
+        }
     },
     recipes: async function ({ page }, req) {
         await isAuth(req);
