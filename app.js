@@ -7,9 +7,9 @@ const graphqlResolver = require('./graphql/resolvers');
 const auth = require('./middleware/auth');
 const multer = require('multer');
 const fs = require('fs');
-const path = require('path');
 const cloudinary = require('cloudinary').v2;
 const User = require('./models/user');
+const fileUpload = require('express-fileupload');
 
 // const cors = require("cors");
 
@@ -24,6 +24,10 @@ const fileStorage = multer.diskStorage({
     cb(null, Date.now() + '_' + file.originalname)
   }
 });
+
+app.use(fileUpload({
+  useTempFiles: true
+}));
 
 cloudinary.config({
   cloud_name: 'codevillian',
@@ -43,10 +47,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-app.use(bodyParser.json());
 app.use(bodyParser.json({ limit: '10mb' }));
-app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
-app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
@@ -60,23 +61,18 @@ app.use((req, res, next) => {
   }
   next();
 });
-var corsOptions = {
-  origin: 'http://localhost:8100',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
 
-
-app.post('/post-image', (req, res, next) => {
+app.use('/post-image', (req, res, next) => {
+  console.log(req.files, req.body);
+  const file = req.files.image;
   User.findOne({ email: req.body.email } || { displayName: req.body.displayName }).then(user => {
     if (user) {
-      clearImage(req.file.path);
       return;
     }
-    if (!req.file) {
+    if (!file) {
       return res.status(401).json({ message: 'No file provided!' });
     }
-    cloudinary.uploader.upload(req.file.path, function (error, result) {
-      clearImage(req.file.path);
+    cloudinary.uploader.upload(file.tempFilePath, function (error, result) {
       if (error) {
         return res.status(501).json({ message: 'Upload to Cloudinary failed!' });
       }
@@ -139,10 +135,3 @@ mongoose
   })
   .catch(err => console.log(err, 'error'));
 
-
-const clearImage = filePath => {
-  filePath = path.join(__dirname, '', filePath);
-  fs.unlink(filePath, err => {
-    if (err) console.log(err)
-  });
-}
