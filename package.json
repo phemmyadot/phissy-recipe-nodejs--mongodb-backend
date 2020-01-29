@@ -1,18 +1,24 @@
 {
-  "name": "nodejs-complete-guide",
+  "name": "Phissy-nose-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "node app.js"
   },
+ "keywords": [
+    "heroku"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/phemmyadot/phissy-recipe-nodejs--mongodb-backend"
+    "url": "https://github.com/phemmyadot/phissy-recipe-nodejs--mongodb-backend/edit/master/package.json"
   },
-  "author": "",
+  "author": "CodeVillian",
   "license": "ISC",
+  "engines": {
+    "node": "10.x"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
