@@ -6,6 +6,7 @@ module.exports = buildSchema(`
         title: String!
         description: String!
         imageUrl: String!
+        imagePubicId: String!
         creator: User!
         likes: [String]
         comments: [String]
@@ -48,6 +49,7 @@ module.exports = buildSchema(`
         title: String!
         description: String!
         imageUrl: String!
+        imagePubicId: String!
     }
 
     type RootQuery {

@@ -73,10 +73,11 @@ app.use('/post-image', (req, res, next) => {
       return res.status(401).json({ message: 'No file provided!' });
     }
     cloudinary.uploader.upload(file.tempFilePath, function (error, result) {
+      console.log(result, " fma")
       if (error) {
         return res.status(501).json({ message: 'Upload to Cloudinary failed!' });
       }
-      return res.status(201).json({ message: 'File Uploaded to Cloudinary!', filePath: result.url });
+      return res.status(201).json({ message: 'File Uploaded to Cloudinary!', filePath: result.url, publicId: result.public_id });
     });
   })
 });

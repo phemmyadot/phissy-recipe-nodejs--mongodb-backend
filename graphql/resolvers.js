@@ -4,8 +4,16 @@ const validator = require('validator');
 
 const jwt = require('jsonwebtoken');
 
+const cloudinary = require('cloudinary').v2;
 const User = require('../models/user');
 const Recipe = require('../models/recipe');
+
+
+cloudinary.config({
+    cloud_name: 'codevillian',
+    api_key: '478726612647927',
+    api_secret: 'kEwzjOuPLWl1BEnHQa3Ew8LG4I4'
+});
 
 module.exports = {
     createUser: async function ({ userInput }, req) {
@@ -99,6 +107,7 @@ module.exports = {
             title: recipeInput.title,
             description: recipeInput.description,
             imageUrl: recipeInput.imageUrl,
+            imagePubicId: recipeInput.imagePubicId,
             creator: user
         });
 
@@ -158,6 +167,7 @@ module.exports = {
         await isCreator(req, recipe);
         recipe.title = recipeInput.title;
         recipe.description = recipeInput.description;
+        recipe.imagePubicId = recipeInput.imagePubicId;
         if (recipe.imageUrl !== 'undefined') {
             recipe.imageUrl = recipeInput.imageUrl;
         }
@@ -172,12 +182,16 @@ module.exports = {
     deleteRecipe: async function ({ id }, req) {
         await isAuth(req);
         const recipe = await Recipe.findById(id);
+        console.log('here', id)
         await isFound(recipe);
         await isCreator(req, recipe);
         await Recipe.findByIdAndRemove(id);
         const user = await User.findById(req.userId);
         user.recipes.pull(id);
         await user.save();
+        console.log('got here');
+        await cloudinary.uploader.destroy(recipe.imagePubicId, function (result) { console.log(result) });
+        console.log('got here2');
         return true;
     }
 
