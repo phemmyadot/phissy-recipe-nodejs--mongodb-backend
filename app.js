@@ -63,7 +63,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/post-image', (req, res, next) => {
-  console.log(req.files, req.body);
   const file = req.files.image;
   User.findOne({ email: req.body.email } || { displayName: req.body.displayName }).then(user => {
     if (user) {
@@ -73,7 +72,6 @@ app.use('/post-image', (req, res, next) => {
       return res.status(401).json({ message: 'No file provided!' });
     }
     cloudinary.uploader.upload(file.tempFilePath, function (error, result) {
-      console.log(result, " fma")
       if (error) {
         return res.status(501).json({ message: 'Upload to Cloudinary failed!' });
       }
@@ -97,7 +95,6 @@ app.use(
       if (!err.originalError) {
         return err;
       }
-      console.log('error');
       const data = err.originalError.data;
       const message = err.message || 'An error occurred!';
       const code = err.originalError.code || 500;

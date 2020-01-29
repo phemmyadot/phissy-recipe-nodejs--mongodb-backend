@@ -98,7 +98,6 @@ module.exports = {
         return { token: token, user: user };
     },
     createRecipe: async function ({ recipeInput }, req) {
-        console.log(recipeInput);
         await isAuth(req);
         await validateRecipeInput(recipeInput);
         const user = await User.findById(req.userId);
@@ -182,16 +181,13 @@ module.exports = {
     deleteRecipe: async function ({ id }, req) {
         await isAuth(req);
         const recipe = await Recipe.findById(id);
-        console.log('here', id)
         await isFound(recipe);
         await isCreator(req, recipe);
         await Recipe.findByIdAndRemove(id);
         const user = await User.findById(req.userId);
         user.recipes.pull(id);
         await user.save();
-        console.log('got here');
         await cloudinary.uploader.destroy(recipe.imagePubicId, function (result) { console.log(result) });
-        console.log('got here2');
         return true;
     }
 
