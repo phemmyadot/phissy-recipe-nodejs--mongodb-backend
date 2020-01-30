@@ -18,6 +18,12 @@ cloudinary.config({
 module.exports = {
     createUser: async function ({ userInput }, req) {
         // const email = userInput.email
+        let imageUrl;
+        if (userInput.imageUrl.includes('http://')) {
+            imageUrl = 'https://' + userInput.imageUrl.slice(7);
+        } else if (userInput.imageUrl.includes('https://')) {
+            imageUrl = userInput.imageUrl;
+        }
         const errors = [];
         if (!validator.isEmail(userInput.email)) {
             errors.push({ message: 'E-mail is invalid!' });
@@ -60,7 +66,7 @@ module.exports = {
             lastName: userInput.lastName,
             password: hashedPw,
             role: "tester",
-            imageUrl: userInput.imageUrl,
+            imageUrl: imageUrl,
         });
         const createdUser = await user.save();
         return { ...createdUser._doc, _id: createdUser._id.toString() };
