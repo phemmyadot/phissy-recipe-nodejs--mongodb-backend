@@ -98,6 +98,14 @@ module.exports = {
         return { token: token, user: user };
     },
     createRecipe: async function ({ recipeInput }, req) {
+        let imageUrl;
+        if (recipeInput.imageUrl.includes('http://')) {
+            imageUrl = 'https://' + recipeInput.imageUrl.slice(7);
+        } else if (recipeInput.imageUrl.includes('https://')) {
+            imageUrl = recipeInput.imageUrl;
+        }
+
+        console.log('image---->', imageUrl);
         await isAuth(req);
         await validateRecipeInput(recipeInput);
         const user = await User.findById(req.userId);
@@ -105,7 +113,7 @@ module.exports = {
         const recipe = new Recipe({
             title: recipeInput.title,
             description: recipeInput.description,
-            imageUrl: recipeInput.imageUrl,
+            imageUrl: imageUrl,
             imagePubicId: recipeInput.imagePubicId,
             creator: user
         });
