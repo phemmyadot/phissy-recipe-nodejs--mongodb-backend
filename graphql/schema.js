@@ -54,7 +54,7 @@ module.exports = buildSchema(`
 
     type RootQuery {
         login(email: String!, password: String!): AuthData!
-        recipes(page: Int!): RecipeData!
+        recipes(page: Int!, perPage: Int!): RecipeData!
         recipe(id: ID!): Recipe!
     }
 

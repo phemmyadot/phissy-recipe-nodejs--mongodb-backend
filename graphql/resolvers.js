@@ -134,12 +134,14 @@ module.exports = {
             updatedAt: createdRecipe.updatedAt.toString()
         }
     },
-    recipes: async function ({ page }, req) {
+    recipes: async function ({ page, perPage }, req) {
         await isAuth(req);
         if (!page) {
             page = 1;
         }
-        const perPage = 10;
+        if (!perPage) {
+            perPage = 5;
+        }
 
         const totalRecipes = await Recipe.find().countDocuments();
         const recipes = await Recipe
