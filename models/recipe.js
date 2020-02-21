@@ -24,14 +24,10 @@ const recipeSchema = new Schema(
       ref: 'User',
       required: true
     },
-    likes: {
-      type: Array,
-      required: true
-    },
-    comments: {
-      type: Array,
-      required: true
-    },
+    likes: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Like'
+    }]
   },
   { timestamps: true }
 );

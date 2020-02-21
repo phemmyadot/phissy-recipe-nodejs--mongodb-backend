@@ -1,6 +1,13 @@
 const { buildSchema } = require("graphql");
 
 module.exports = buildSchema(`
+
+    type Like {
+        _id: ID!
+        userId: ID!
+        recipeId: ID!
+    }
+
     type Recipe {
         _id: ID!
         title: String!
@@ -8,8 +15,7 @@ module.exports = buildSchema(`
         imageUrl: String!
         imagePubicId: String!
         creator: User!
-        likes: [String]
-        comments: [String]
+        likes: [Like]
         createdAt: String!
         updatedAt: String!
     }
@@ -63,6 +69,7 @@ module.exports = buildSchema(`
         createRecipe(recipeInput: RecipeInputData): Recipe!
         updateRecipe(id: ID!, recipeInput: RecipeInputData): Recipe!
         deleteRecipe(id: ID!): Boolean!
+        likeRecipe(recipeId: ID!, userId: ID!): Like!
     }
 
     schema {

@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const cloudinary = require('cloudinary').v2;
 const User = require('../models/user');
 const Recipe = require('../models/recipe');
+const Like = require('../models/like');
 
 
 cloudinary.config({
@@ -111,7 +112,6 @@ module.exports = {
             imageUrl = recipeInput.imageUrl;
         }
 
-        console.log('image---->', imageUrl);
         await isAuth(req);
         await validateRecipeInput(recipeInput);
         const user = await User.findById(req.userId);
@@ -149,7 +149,8 @@ module.exports = {
             .sort({ createdAt: -1 })
             .skip((page - 1) * perPage)
             .limit(perPage)
-            .populate('creator');
+            .populate('creator')
+            .populate('likes');
         return {
             recipes: recipes.map(recipe => {
                 return {
@@ -205,6 +206,35 @@ module.exports = {
         await user.save();
         await cloudinary.uploader.destroy(recipe.imagePubicId, function (result) { console.log(result) });
         return true;
+    },
+    likeRecipe: async function ({recipeId, userId}, req) {
+        await isAuth(req);
+        const recipe = await Recipe.findById(recipeId).populate('likes');
+        const existingLike = await Like.findOne({userId: userId}, {recipeId: recipeId});
+        if (existingLike) {
+            await Like.findByIdAndRemove(existingLike._id.toString());
+            recipe.likes.pull(existingLike._id);
+            await recipe.save();
+            return {
+                ...existingLike._doc,
+                _id: existingLike._id.toString()
+            }
+        }
+
+        await isFound(recipe);
+        const like = new Like({
+            userId: userId,
+            recipeId: recipeId
+        });
+        const liked = await like.save();
+        recipe.likes.push(liked._id);
+        await recipe.save();
+        return {
+            ...liked._doc,
+            _id: liked._id.toString(),
+            userId: liked.userId,
+            recipeId: liked.recipeId 
+        }
     }
 
 };
