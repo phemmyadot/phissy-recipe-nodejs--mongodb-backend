@@ -4,8 +4,8 @@ module.exports = buildSchema(`
 
     type Like {
         _id: ID!
-        userId: ID!
-        recipeId: ID!
+        userId: ID
+        recipeId: ID
     }
 
     type Recipe {

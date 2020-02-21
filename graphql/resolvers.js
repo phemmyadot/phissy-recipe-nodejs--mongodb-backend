@@ -217,7 +217,8 @@ module.exports = {
             await recipe.save();
             return {
                 ...existingLike._doc,
-                _id: existingLike._id.toString()
+                _id: existingLike._id.toString(),
+                isLike: false
             }
         }
 
@@ -232,8 +233,7 @@ module.exports = {
         return {
             ...liked._doc,
             _id: liked._id.toString(),
-            userId: liked.userId,
-            recipeId: liked.recipeId 
+            isLike: true
         }
     }
 
