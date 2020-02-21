@@ -210,7 +210,7 @@ module.exports = {
     likeRecipe: async function ({recipeId, userId}, req) {
         await isAuth(req);
         const recipe = await Recipe.findById(recipeId).populate('likes');
-        const existingLike = await Like.findOne({userId: userId}, {recipeId: recipeId});
+        const existingLike = await Like.findOne({userId: userId, recipeId: recipeId});
         if (existingLike) {
             await Like.findByIdAndRemove(existingLike._id.toString());
             recipe.likes.pull(existingLike._id);
