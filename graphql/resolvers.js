@@ -209,6 +209,7 @@ module.exports = {
         user.recipes.pull(id);
         await user.save();
         await cloudinary.uploader.destroy(recipe.imagePubicId, function (result) { console.log(result) });
+        io.getIo().emit('recipes', { action: 'deleteRecipe', recipeId: id });
         return true;
     },
     likeRecipe: async function ({recipeId, userId}, req) {
