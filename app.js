@@ -6,7 +6,6 @@ const graphqlSchema = require('./graphql/schema');
 const graphqlResolver = require('./graphql/resolvers');
 const auth = require('./middleware/auth');
 const multer = require('multer');
-const fs = require('fs');
 const cloudinary = require('cloudinary').v2;
 const User = require('./models/user');
 const fileUpload = require('express-fileupload');
@@ -129,7 +128,11 @@ mongoose
   .connect(uri, options)
   .then(result => {
     console.log('connected to =>', uri);
-    app.listen(process.env.PORT || 8080);
+    const server = app.listen(process.env.PORT || 8080);
+    const io = require('./middleware/socket').init(server);
+    io.on('connection', socket => {
+      console.log('Client Connected');
+    })
   })
   .catch(err => console.log(err, 'error'));
 

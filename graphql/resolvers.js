@@ -9,6 +9,8 @@ const User = require('../models/user');
 const Recipe = require('../models/recipe');
 const Like = require('../models/like');
 
+const io = require('./../middleware/socket');
+
 
 cloudinary.config({
     cloud_name: 'codevillian',
@@ -127,6 +129,7 @@ module.exports = {
         const createdRecipe = await recipe.save();
         user.recipes.push(createdRecipe);
         await user.save();
+        io.getIo().emit('recipes', { action: 'createRecipe', recipe: createdRecipe });
         return {
             ...createdRecipe._doc,
             _id: createdRecipe._id.toString(),
@@ -188,6 +191,7 @@ module.exports = {
             recipe.imageUrl = recipeInput.imageUrl;
         }
         const updatedRecipe = await recipe.save();
+        io.getIo().emit('recipes', { action: 'editRecipe', recipe: updatedRecipe });
         return {
             ...updatedRecipe._doc,
             _id: updatedRecipe._id.toString(),
@@ -212,13 +216,14 @@ module.exports = {
         const recipe = await Recipe.findById(recipeId).populate('likes');
         const existingLike = await Like.findOne({userId: userId, recipeId: recipeId});
         if (existingLike) {
+            console.log('existingLike', existingLike, userId, recipeId)
             await Like.findByIdAndRemove(existingLike._id.toString());
             recipe.likes.pull(existingLike._id);
             await recipe.save();
+            io.getIo().emit('recipes', { action: 'like', recipe: recipe, status: 0, user: userId, likeId: existingLike._id });
             return {
                 ...existingLike._doc,
-                _id: existingLike._id.toString(),
-                isLike: false
+                status: 0
             }
         }
 
@@ -230,10 +235,11 @@ module.exports = {
         const liked = await like.save();
         recipe.likes.push(liked._id);
         await recipe.save();
+        const likedRecipe = await Recipe.findById(recipeId).populate('likes');
+        io.getIo().emit('recipes', { action: 'like', recipe: likedRecipe, status: 1, user: userId, likeId: liked._id });
         return {
-            ...liked._doc,
-            _id: liked._id.toString(),
-            isLike: true
+            ...likedRecipe._doc,
+            recipe: likedRecipe
         }
     }
 
