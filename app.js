@@ -29,9 +29,9 @@ app.use(fileUpload({
 }));
 
 cloudinary.config({
-  cloud_name: 'codevillian',
-  api_key: '478726612647927',
-  api_secret: 'kEwzjOuPLWl1BEnHQa3Ew8LG4I4'
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 const fileFilter = (req, file, cb) => {
@@ -112,8 +112,7 @@ app.use((error, req, res, next) => {
   const data = error.data;
   res.status(status).json({ message: message, data: data });
 });
-const uri =
-  'mongodb+srv://codevillian:1qhhmfSUDW3ACwlM@cluster0-9jwcj.mongodb.net/phissy?retryWrites=true&w=majority';
+const uri = process.env.MONGODB_CONNECT;
 
 const options = {
   useNewUrlParser: true,

@@ -13,9 +13,9 @@ const io = require('./../middleware/socket');
 
 
 cloudinary.config({
-    cloud_name: 'codevillian',
-    api_key: '478726612647927',
-    api_secret: 'kEwzjOuPLWl1BEnHQa3Ew8LG4I4'
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 module.exports = {
