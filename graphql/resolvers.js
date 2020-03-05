@@ -21,6 +21,10 @@ cloudinary.config({
 module.exports = {
     createUser: async function ({ userInput }, req) {
         // const email = userInput.email
+        const bytes  = CryptoJS.AES.decrypt(userInput.password, 'PhissyEncryptionKey');
+        const password = bytes.toString(CryptoJS.enc.Utf8);
+        const cbytes  = CryptoJS.AES.decrypt(userInput.confirmPassword, 'PhissyEncryptionKey');
+        const confirmPassword = cbytes.toString(CryptoJS.enc.Utf8);
         let imageUrl;
         if (userInput.imageUrl.includes('http://')) {
             imageUrl = 'https://' + userInput.imageUrl.slice(7);
@@ -32,13 +36,13 @@ module.exports = {
             errors.push({ message: 'E-mail is invalid!' });
         }
         if (
-            validator.isEmpty(userInput.password) ||
-            !validator.isLength(userInput.password, { min: 6 })
+            validator.isEmpty(password) ||
+            !validator.isLength(password, { min: 6 })
         ) {
             errors.push({ message: 'Password too short!' });
         }
 
-        if (userInput.confirmPassword !== userInput.password) {
+        if (confirmPassword !== password) {
             errors.push.apply({ message: "Confirm password does not match!" })
         }
         if (validator.isEmpty(userInput.firstName)) {
@@ -61,7 +65,7 @@ module.exports = {
             const error = new Error('User already exists!');
             throw error;
         }
-        const hashedPw = await bcrypt.hash(userInput.password, 12);
+        const hashedPw = await bcrypt.hash(password, 12);
         const user = new User({
             email: userInput.email,
             displayName: userInput.displayName,
@@ -75,6 +79,8 @@ module.exports = {
         return { ...createdUser._doc, _id: createdUser._id.toString() };
     },
     login: async function ({ email, password }) {
+        const bytes  = CryptoJS.AES.decrypt(password, 'PhissyEncryptionKey');
+        password = bytes.toString(CryptoJS.enc.Utf8);
         const errors = [];
         if (!validator.isEmail(email)) {
             errors.push({ message: 'E-mail is invalid!' });
