@@ -11,6 +11,7 @@ const Like = require('../models/like');
 
 const io = require('./../middleware/socket');
 
+const CryptoJS = require("crypto-js");
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,
