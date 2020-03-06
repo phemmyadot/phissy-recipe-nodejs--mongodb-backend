@@ -79,7 +79,7 @@ app.use('/post-image', (req, res, next) => {
   })
 });
 
-app.use('/confirmAccount', async (req, res, next) => {
+app.use('/confirmAccount', (req, res, next) => {
   let decodedToken;
     try {
         decodedToken = jwt.verify(req.query.token, process.env.SECRET_KEY || 'adojuteleganbabafemisecretkey');
@@ -90,12 +90,13 @@ app.use('/confirmAccount', async (req, res, next) => {
         return next();
     }
     const userId = decodedToken.userId;
-    await User.update({_id: userId}, {
+    User.update({_id: userId}, {
       emailConfirmation: true
     }, (err, affected, resp) => {
       console.log(resp);
+    }).then(res => {
+      res.redirect('https://app.example.iohttps://phissy-recipe-app.netlify.com/');
     });
-    res.redirect('https://app.example.iohttps://phissy-recipe-app.netlify.com/');
 });
 
 app.use(auth);

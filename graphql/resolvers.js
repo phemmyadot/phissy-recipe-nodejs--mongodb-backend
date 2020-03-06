@@ -108,7 +108,7 @@ module.exports = {
             from: 'phemmylekan@gmail.com',
             subject: 'Phissy Account Confirmation',
             text: 'Click the button below to confirm your account',
-            html: `<a href="https://phissy-node-app.herokuapp.com/confirmAccount?token="${token}"><button>Confirm Account</button></a>`,
+            html: `<a href="/confirmAccount?token="${token}"><button>Confirm Account</button></a>`,
           };
         sgMail.send(msg);
         console.log('message', msg, sgMail.send(msg));
