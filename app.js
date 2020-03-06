@@ -79,9 +79,9 @@ app.use('/post-image', (req, res, next) => {
   })
 });
 
-app.use('confirmAccount', (req, res, next) => {
-  console.log(req,res);
-});
+// app.use('/confirmAccount', (req, res, next) => {
+//   console.log(req,res);
+// });
 
 app.use(auth);
 // app.use(cors());
