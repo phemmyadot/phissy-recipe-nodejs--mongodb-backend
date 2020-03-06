@@ -95,7 +95,7 @@ app.use('/confirmAccount', (req, res, next) => {
     }, (err, affected, resp) => {
       console.log(resp);
     }).then(res => {
-      res.redirect('https://app.example.iohttps://phissy-recipe-app.netlify.com/');
+      res.redirect('https://phissy-recipe-app.netlify.com/');
     });
 });
 
