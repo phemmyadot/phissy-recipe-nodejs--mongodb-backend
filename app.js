@@ -61,7 +61,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/post-image', (req, res, next) => {
+app.get('/post-image', (req, res, next) => {
   const file = req.files.image;
   User.findOne({ email: req.body.email } || { displayName: req.body.displayName }).then(user => {
     if (user) {
