@@ -79,9 +79,24 @@ app.use('/post-image', (req, res, next) => {
   })
 });
 
-// app.use('/confirmAccount', (req, res, next) => {
-//   console.log(req,res);
-// });
+app.use('/confirmAccount', async (req, res, next) => {
+  let decodedToken;
+    try {
+        decodedToken = jwt.verify(req.query.token, process.env.SECRET_KEY || 'adojuteleganbabafemisecretkey');
+    } catch (err) {
+        return next();
+    }
+    if (!decodedToken) {
+        return next();
+    }
+    const userId = decodedToken.userId;
+    await User.update({_id: userId}, {
+      emailConfirmation: true
+    }, (err, affected, resp) => {
+      console.log(resp);
+    });
+    res.redirect('https://app.example.iohttps://phissy-recipe-app.netlify.com/');
+});
 
 app.use(auth);
 // app.use(cors());

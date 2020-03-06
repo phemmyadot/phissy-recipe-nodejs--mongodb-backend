@@ -82,21 +82,21 @@ module.exports = {
             imageUrl: imageUrl,
             emailConfirmation: false
         });
+        const createdUser = await user.save();
         const token = jwt.sign(
             {
-                userId: user._id.toString(),
-                email: user.email,
+                userId: createdUser._id.toString(),
+                email: userInput.email,
             },
-            process.env.SECRET_KEY ||' adojuteleganbabafemisecretkey',
+            process.env.SECRET_KEY || 'adojuteleganbabafemisecretkey',
             { expiresIn: '1h' }
         );
-        const createdUser = await user.save();
         const msg = {
             to: userInput.email,
             from: 'admin@phissy-recipe-app.com',
             subject: 'Phissy Account Confirmation',
             text: 'Click the button below to confirm your account',
-            html: '<a href="https://phissy-node-app.herokuapp.com/confirmAccount?token="token"><button>Confirm Account</button></a>',
+            html: `<a href="https://phissy-node-app.herokuapp.com/confirmAccount?token="${token}"><button>Confirm Account</button></a>`,
           };
           sgMail.send(msg);
         return { ...createdUser._doc, _id: createdUser._id.toString() };
