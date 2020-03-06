@@ -13,12 +13,18 @@ const io = require('./../middleware/socket');
 
 const CryptoJS = require("crypto-js");
 
+const sgMail = require('@sendgrid/mail');
+
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+    cloud_name: process.env.CLOUDINARY_NAME || 'codevillian',
+    api_key: process.env.CLOUDINARY_API_KEY || '478726612647927',
+    api_secret: process.env.CLOUDINARY_API_SECRET || 'kEwzjOuPLWl1BEnHQa3Ew8LG4I4'
 });
 
+sgMail.setApiKey(process.env.SENDGRID_API_KEY || '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');
+
+// PhissySendGridKey
+// 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
 module.exports = {
     createUser: async function ({ userInput }, req) {
         // const email = userInput.email
@@ -73,14 +79,30 @@ module.exports = {
             firstName: userInput.firstName,
             lastName: userInput.lastName,
             password: hashedPw,
-            role: "tester",
             imageUrl: imageUrl,
+            emailConfirmation: false
         });
+        const token = jwt.sign(
+            {
+                userId: user._id.toString(),
+                email: user.email,
+            },
+            process.env.SECRET_KEY ||' adojuteleganbabafemisecretkey',
+            { expiresIn: '1h' }
+        );
         const createdUser = await user.save();
+        const msg = {
+            to: userInput.email,
+            from: 'admin@phissy-recipe-app.com',
+            subject: 'Phissy Account Confirmation',
+            text: 'Click the button below to confirm your account',
+            html: '<a href="https://phissy-node-app.herokuapp.com/confirmAccount?token="token"><button>Confirm Account</button></a>',
+          };
+          sgMail.send(msg);
         return { ...createdUser._doc, _id: createdUser._id.toString() };
     },
     login: async function ({ email, password }) {
-        const bytes  = CryptoJS.AES.decrypt(password, 'PhissyEncryptionKey');
+        const bytes  = CryptoJS.AES.decrypt(password, process.env.ENCRYPTION_KEY || 'PhissyEncryptionKey');
         password = bytes.toString(CryptoJS.enc.Utf8);
         const errors = [];
         if (!validator.isEmail(email)) {
@@ -108,7 +130,7 @@ module.exports = {
                 userId: user._id.toString(),
                 email: user.email,
             },
-            'adojuteleganbabafemisecretkey',
+            process.env.SECRET_KEY || 'adojuteleganbabafemisecretkey',
             { expiresIn: '1h' }
         );
         return { token: token, user: user };

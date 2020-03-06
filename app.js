@@ -29,9 +29,9 @@ app.use(fileUpload({
 }));
 
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  cloud_name: process.env.CLOUDINARY_NAME || 'codevillian',
+  api_key: process.env.CLOUDINARY_API_KEY || '478726612647927',
+  api_secret: process.env.CLOUDINARY_API_SECRET || 'kEwzjOuPLWl1BEnHQa3Ew8LG4I4'
 });
 
 const fileFilter = (req, file, cb) => {
@@ -79,6 +79,9 @@ app.use('/post-image', (req, res, next) => {
   })
 });
 
+app.use('confirmAccount', (req, res, next) => {
+  console.log(req,res);
+});
 
 app.use(auth);
 // app.use(cors());
@@ -112,7 +115,7 @@ app.use((error, req, res, next) => {
   const data = error.data;
   res.status(status).json({ message: message, data: data });
 });
-const uri = process.env.MONGODB_CONNECT;
+const uri = process.env.MONGODB_CONNECT || 'mongodb+srv://codevillian:1qhhmfSUDW3ACwlM@cluster0-9jwcj.mongodb.net/phissy?retryWrites=true&w=majority';
 
 const options = {
   useNewUrlParser: true,

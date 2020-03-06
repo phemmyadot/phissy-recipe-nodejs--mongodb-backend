@@ -26,6 +26,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    emailConfirmation: {
+        type: Boolean,
+        required: true
+    },
     recipes: [
         {
             type: Schema.Types.ObjectId,
