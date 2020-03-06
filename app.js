@@ -93,8 +93,12 @@ app.use('/confirm-account', (req, res, next) => {
     User.update({_id: userId}, {
       emailConfirmation: true
     }, (err, affected, resp) => {
-      console.log(resp);
-    }).then(res => {
+      return res.status(501).json({ message: 'Email confirmation failed!', status: false });
+    })
+    .then(resp => {
+      res.status(201).json({ message: 'Email Confirmed', status: true });
+    })
+    .then(resps => {
       res.redirect('https://phissy-recipe-app.netlify.com/');
     });
 });
