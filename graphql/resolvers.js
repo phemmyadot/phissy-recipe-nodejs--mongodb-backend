@@ -105,7 +105,7 @@ module.exports = {
         );
         const msg = {
             to: userInput.email,
-            from: 'admin@phissy-recipe-app.com',
+            from: 'phemmylekan@gmail.com',
             subject: 'Phissy Account Confirmation',
             text: 'Click the button below to confirm your account',
             html: `<a href="https://phissy-node-app.herokuapp.com/confirmAccount?token="${token}"><button>Confirm Account</button></a>`,
