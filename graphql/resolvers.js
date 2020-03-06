@@ -21,7 +21,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET || 'kEwzjOuPLWl1BEnHQa3Ew8LG4I4'
 });
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY || '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');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY || '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');
 
 // PhissySendGridKey
 // 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
