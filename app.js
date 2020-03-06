@@ -61,7 +61,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/post-image', (req, res, next) => {
+app.use('/post-image', (req, res, next) => {
   const file = req.files.image;
   User.findOne({ email: req.body.email } || { displayName: req.body.displayName }).then(user => {
     if (user) {
@@ -79,7 +79,7 @@ app.get('/post-image', (req, res, next) => {
   })
 });
 
-app.use('/confirm-account', (req, res, next) => {
+app.get('/confirm-account', (req, res, next) => {
   let decodedToken;
     try {
         decodedToken = jwt.verify(req.query.token, process.env.SECRET_KEY || 'adojuteleganbabafemisecretkey');
