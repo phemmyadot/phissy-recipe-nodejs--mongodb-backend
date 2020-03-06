@@ -96,10 +96,10 @@ app.use('/confirm-account', (req, res, next) => {
       return res.status(501).json({ message: 'Email confirmation failed!', status: false });
     })
     .then(resp => {
-      res.status(201).json({ message: 'Email Confirmed', status: true });
+      return res.status(201).json({ message: 'Email Confirmed', status: true });
     })
     .then(resps => {
-      res.redirect('https://phissy-recipe-app.netlify.com/');
+      return res.redirect('https://phissy-recipe-app.netlify.com/');
     });
 });
 
