@@ -9,9 +9,9 @@ const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const User = require('./models/user');
 const fileUpload = require('express-fileupload');
-
+const jwt = require('jsonwebtoken');
 // const cors = require("cors");
-
+const CryptoJS = require("crypto-js");
 
 const app = express();
 
@@ -81,25 +81,26 @@ app.use('/post-image', (req, res, next) => {
 
 app.get('/confirm-account', (req, res, next) => {
   let decodedToken;
-    try {
-        decodedToken = jwt.verify(req.query.token, process.env.SECRET_KEY || 'adojuteleganbabafemisecretkey');
-    } catch (err) {
-        return next();
-    }
+    decodedToken = jwt.verify(req.query.token, process.env.SECRET_KEY || 'adojuteleganbabafemisecretkey');
+
     if (!decodedToken) {
         return next();
     }
+    console.log(decodedToken)
     const userId = decodedToken.userId;
-    User.update({_id: userId}, {
+    User.updateOne({_id: userId}, {
       emailConfirmation: true
-    }, (err, affected, resp) => {
+    })
+    .then(user => {
+      const data = {
+        'email': decodedToken.email,
+        'isConfirmed': true
+      };
+      var encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), 'secret key 123').toString();
+      return res.redirect(`https://phissy-recipe-app.netlify.com/auth/account-confirmation?data=${encryptedData}`);
+    })
+    .catch(err => {
       return res.status(501).json({ message: 'Email confirmation failed!', status: false });
-    })
-    .then(resp => {
-      return res.status(201).json({ message: 'Email Confirmed', status: true });
-    })
-    .then(resps => {
-      return res.redirect('https://phissy-recipe-app.netlify.com/');
     });
 });
 

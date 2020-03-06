@@ -28,10 +28,12 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY || 'SG.vvdG7ObcTfGG_RzOk-Z0Bw.BUFr
 module.exports = {
     createUser: async function ({ userInput }, req) {
         // const email = userInput.email
-        const bytes  = CryptoJS.AES.decrypt(userInput.password, 'PhissyEncryptionKey');
-        const password = bytes.toString(CryptoJS.enc.Utf8);
-        const cbytes  = CryptoJS.AES.decrypt(userInput.confirmPassword, 'PhissyEncryptionKey');
-        const confirmPassword = cbytes.toString(CryptoJS.enc.Utf8);
+        // const bytes  = CryptoJS.AES.decrypt(userInput.password, 'PhissyEncryptionKey');
+        // const password = bytes.toString(CryptoJS.enc.Utf8);
+        // const cbytes  = CryptoJS.AES.decrypt(userInput.confirmPassword, 'PhissyEncryptionKey');
+        // const confirmPassword = cbytes.toString(CryptoJS.enc.Utf8);
+        password = userInput.password;
+        confirmPassword = userInput.confirmPassword;
         let imageUrl;
         if (userInput.imageUrl.includes('http://')) {
             imageUrl = 'https://' + userInput.imageUrl.slice(7);
