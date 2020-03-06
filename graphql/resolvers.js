@@ -67,11 +67,23 @@ module.exports = {
             error.code = 422;
             throw error;
         }
-        const existingUser = await User.findOne({ email: userInput.email } || { displayName: userInput.displayName });
-        if (existingUser) {
-            const error = new Error('User already exists!');
-            throw error;
-        }
+        User.find({ 'username': userInput.displayName, 'email':userInput.email }, (err, user) => {
+            if (err) {
+                console.log('Signup error');
+                return done(err);
+            }
+            //if user found.
+            if (user.length!=0) {
+                if(user[0].username){
+                    console.log('Display name already exists, username: ' + userInput.displayName);                         
+                } else {
+                    console.log('EMAIL already exists, email: ' + userInput.email);      
+                }                                    
+                var err = new Error();
+                err.status = 310;
+                return done(err);
+            }
+        });
         const hashedPw = await bcrypt.hash(password, 12);
         const user = new User({
             email: userInput.email,
@@ -98,7 +110,8 @@ module.exports = {
             text: 'Click the button below to confirm your account',
             html: `<a href="https://phissy-node-app.herokuapp.com/confirmAccount?token="${token}"><button>Confirm Account</button></a>`,
           };
-          sgMail.send(msg);
+        sgMail.send(msg);
+        console.log('message', msg, sgMail.send(msg));
         return { ...createdUser._doc, _id: createdUser._id.toString() };
     },
     login: async function ({ email, password }) {
