@@ -79,7 +79,7 @@ app.use('/post-image', (req, res, next) => {
   })
 });
 
-app.use('/confirmAccount', (req, res, next) => {
+app.use('/confirm-account', (req, res, next) => {
   let decodedToken;
     try {
         decodedToken = jwt.verify(req.query.token, process.env.SECRET_KEY || 'adojuteleganbabafemisecretkey');
