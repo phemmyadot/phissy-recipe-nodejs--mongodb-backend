@@ -1,5 +1,5 @@
 {
-  "name": "Phissy-nose-backend",
+  "name": "Phissy-node-backend",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -13,9 +13,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/phemmyadot/phissy-recipe-nodejs--mongodb-backend/edit/master/package.json"
+    "url": "https://github.com/phemmyadot/phissy-recipe-nodejs--mongodb-backend"
   },
-  "author": "CodeVillian",
+  "author": "DevPhemmy",
   "license": "ISC",
   "engines": {
     "node": "10.x"
