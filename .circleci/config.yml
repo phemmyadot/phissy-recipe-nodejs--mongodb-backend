@@ -4,17 +4,14 @@ orbs:
   heroku: circleci/heroku@1.2.6
 
 jobs:
-  build_and_test:
+  build:
     executor: node/default
     steps:
       - checkout
       - node/install-packages:
-          pkg-manager: yarn
-      # - run:
-      #     command: yarn test
-      #     name: Run tests
+          pkg-manager: npm
       - run:
-          command: yarn build
+          command: npm run build
           name: Build app
       - persist_to_workspace:
           root: ~/project
@@ -29,13 +26,3 @@ jobs:
       - heroku/deploy-via-git:
           force: true # force push when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
 
-workflows:
-  test_my_app:
-    jobs:
-      - build_and_test
-      - deploy:
-          requires:
-            - build_and_test # only deploy if the build_and_test job has completed
-          filters:
-            branches:
-              only: main # only deploy when on main
